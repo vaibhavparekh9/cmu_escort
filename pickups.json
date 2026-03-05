@@ -1,0 +1,27 @@
+{
+  "Craig": {
+    "name": "300 S. Craig Street",
+    "latitude": 40.44570333393433, 
+    "longitude": -79.94921687512655
+  },
+  "Hamburg": {
+    "name": "Hamburg Hall", 
+    "latitude": 40.444513449561896,
+    "longitude": -79.94559768861971
+  },
+  "Cohon": {
+    "name": "Cohon University Center",
+    "latitude": 40.44425190750435, 
+    "longitude": -79.94159577752288
+  },
+  "MargaretMorrison": {
+    "name": "Margaret Morrison Plaza",
+    "latitude": 40.441749568331275, 
+    "longitude": -79.9387921696148
+  },
+  "FrewTech": {
+    "name": "Frew Street at Tech Street",
+    "latitude": 40.440649349938596, 
+    "longitude": -79.94213453828381
+  }
+}

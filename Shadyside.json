@@ -1,0 +1,192 @@
+{
+  "Fifth+Wilkins": {
+    "name": "Fifth+Wilkins",
+    "latitude": 40.4478138,
+    "longitude": -79.937114
+  },
+  "Fifth+S.Aiken": {
+    "name": "Fifth+S.Aiken",
+    "latitude": 40.4483955,
+    "longitude": -79.934228
+  },
+  "Fifth+Bellefont": {
+    "name": "Fifth+Bellefont",
+    "latitude": 40.4489078,
+    "longitude": -79.9325703
+  },
+  "Fifth+S.Negley": {
+    "name": "Fifth+S.Negley",
+    "latitude": 40.4498324,
+    "longitude": -79.9296548
+  },
+  "Fifth+Maryland": {
+    "name": "Fifth+Maryland",
+    "latitude": 40.4505163,
+    "longitude": -79.9275075
+  },
+  "Fifth+College": {
+    "name": "Fifth+College",
+    "latitude": 40.4511939,
+    "longitude": -79.9258177
+  },
+  "Fifth+S.Highland": {
+    "name": "Fifth+S.Highland",
+    "latitude": 40.451945,
+    "longitude": -79.9239958
+  },
+  "Fifth+Emerson": {
+    "name": "Fifth+Emerson",
+    "latitude": 40.4525818,
+    "longitude": -79.9223972
+  },
+  "Shady+Fifth": {
+    "name": "Shady+Fifth",
+    "latitude": 40.4528961,
+    "longitude": -79.9207289
+  },
+  "Shady+Kentucky": {
+    "name": "Shady+Kentucky",
+    "latitude": 40.45372,
+    "longitude": -79.9212297
+  },
+  "Shady+Howe": {
+    "name": "Shady+Howe",
+    "latitude": 40.4545416,
+    "longitude": -79.9217206
+  },
+  "Shady+Walnut": {
+    "name": "Shady+Walnut",
+    "latitude": 40.4558708,
+    "longitude": -79.9225644
+  },
+  "Shady+Alder": {
+    "name": "Shady+Alder",
+    "latitude": 40.456799,
+    "longitude": -79.9224782
+  },
+  "Shady+Marchand": {
+    "name": "Shady+Marchand",
+    "latitude": 40.4572257,
+    "longitude": -79.9224066
+  },
+  "Shady+Aurelia": {
+    "name": "Shady+Aurelia",
+    "latitude": 40.4580951,
+    "longitude": -79.9222564
+  },
+  "Shady+Ellsworth": {
+    "name": "Shady+Ellsworth",
+    "latitude": 40.4592123,
+    "longitude": -79.9220137
+  },
+  "Penn+Target": {
+    "name": "Penn+Target",
+    "latitude": 40.460087,
+    "longitude": -79.9215
+  },
+  "Centre+Annie": {
+    "name": "Centre+Annie",
+    "latitude": 40.4602854,
+    "longitude": -79.9239566
+  },
+  "S.Highland+Centre": {
+    "name": "S.Highland+Centre",
+    "latitude": 40.4599543,
+    "longitude": -79.9250299
+  },
+  "Centre+Walgreens": {
+    "name": "Centre+Walgreens",
+    "latitude": 40.4593966,
+    "longitude": -79.9268905
+  },
+  "S.Beatty+Centre": {
+    "name": "S.Beatty+Centre",
+    "latitude": 40.4593847,
+    "longitude": -79.9275464
+  },
+  "Penn+Wholefoods": {
+    "name": "Penn+Wholefoods",
+    "latitude": 40.4625046,
+    "longitude": -79.9279665
+  },
+  "S.Negley+Penn": {
+    "name": "S.Negley+Penn",
+    "latitude": 40.4632602,
+    "longitude": -79.9308295
+  },
+  "S.Negley+Friendship": {
+    "name": "S.Negley+Friendship",
+    "latitude": 40.4605776,
+    "longitude": -79.932473
+  },
+  "Friendship+Stratford": {
+    "name": "Friendship+Stratford",
+    "latitude": 40.4610102,
+    "longitude": -79.9332977
+  },
+  "Friendship+S.Fairmount": {
+    "name": "Friendship+S.Fairmount",
+    "latitude": 40.4613005,
+    "longitude": -79.9341581
+  },
+  "Friendship+Roup": {
+    "name": "Friendship+Roup",
+    "latitude": 40.461625,
+    "longitude": -79.9350647
+  },
+  "Friendship+S.Graham": {
+    "name": "Friendship+S.Graham",
+    "latitude": 40.4617658,
+    "longitude": -79.936314
+  },
+  "Friendship+S.Aiken": {
+    "name": "Friendship+S.Aiken",
+    "latitude": 40.4619092,
+    "longitude": -79.937625
+  },
+  "Friendship+S.Atlantic": {
+    "name": "Friendship+S.Atlantic",
+    "latitude": 40.4620147,
+    "longitude": -79.9389829
+  },
+  "Friendship+S.Pacific": {
+    "name": "Friendship+S.Pacific",
+    "latitude": 40.4621285,
+    "longitude": -79.9403774
+  },
+  "Harriet+S.Pacific": {
+    "name": "Harriet+S.Pacific",
+    "latitude": 40.4598014,
+    "longitude": -79.9406872
+  },
+  "Harriet+S.Atlantic": {
+    "name": "Harriet+S.Atlantic",
+    "latitude": 40.4596989,
+    "longitude": -79.9392669
+  },
+  "Harriet+S.Aiken": {
+    "name": "Harriet+S.Aiken",
+    "latitude": 40.4595931,
+    "longitude": -79.9380628
+  },
+  "Harriet+S.Graham": {
+    "name": "Harriet+S.Graham",
+    "latitude": 40.4594503,
+    "longitude": -79.936739
+  },
+  "Harriet+Roup": {
+    "name": "Harriet+Roup",
+    "latitude": 40.4593059,
+    "longitude": -79.9354953
+  },
+  "S.Negley+Baum": {
+    "name": "S.Negley+Baum",
+    "latitude": 40.458354,
+    "longitude": -79.933848
+  },
+  "S.Aiken+Baum": {
+    "name": "S.Aiken+Baum",
+    "latitude": 40.4569516,
+    "longitude": -79.9385394
+  }
+}
