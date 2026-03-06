@@ -5,8 +5,8 @@ from pathlib import Path
 import numpy as np
 
 STOPS_JSON = "Shadyside.json"
-OUT_NPZ    = "Shadyside_matrix.npz"
-OUT_INDEX  = "Shadyside_index.json"
+OUT_NPZ    = "output/Shadyside_matrix.npz"
+OUT_INDEX  = "output/Shadyside_index.json"
 
 def load_stops_dict(path):
     data = json.loads(Path(path).read_text())

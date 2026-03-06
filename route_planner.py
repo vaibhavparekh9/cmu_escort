@@ -6,7 +6,7 @@ import numpy as np
 from python_tsp.exact import solve_tsp_dynamic_programming
 
 # ---- Files ----
-NPZ_PATH     = "Shadyside_matrix.npz"  # has dist_m, codes, lats, lons (global superset)
+NPZ_PATH     = "output/Shadyside_matrix.npz"  # has dist_m, codes, lats, lons (global superset)
 STOPS_JSON   = "stops.json"            # tapped student stops: {code: {name, latitude, longitude}, ...}
 PICKUPS_JSON = "pickups.json"          # depots in insertion order; last = origin, first = destination
 
