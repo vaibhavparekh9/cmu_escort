@@ -8,8 +8,6 @@ STOPS = os.path.join(PROJECT_ROOT, "stops.json")
 
 app = Flask(__name__)
 
-write_json(STOPS, {})
-
 
 def read_json(path):
     try:
@@ -22,6 +20,9 @@ def read_json(path):
 def write_json(path, data):
     with open(path, "w") as f:
         json.dump(data, f, indent=4)
+
+
+write_json(STOPS, {})
 
 
 @app.route("/")

@@ -1,0 +1,7 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color cmu_red
+color white
+string app_name
+style AppTheme

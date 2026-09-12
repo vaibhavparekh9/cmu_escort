@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:colorPrimary">@color/cmu_red</item>
+        <item name="android:colorPrimaryDark">@color/cmu_red</item>
+        <item name="android:statusBarColor">@color/cmu_red</item>
+        <item name="android:navigationBarColor">@color/cmu_red</item>
+        <item name="android:windowBackground">@color/cmu_red</item>
+    </style>
+</resources>
