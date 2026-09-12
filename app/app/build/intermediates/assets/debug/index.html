@@ -2,21 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>CMU Escort</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html, body { height: 100%; overflow: hidden; }
 
         body {
             background: #941120;
-            font-family: 'Roboto', 'Open Sans', sans-serif;
+            font-family: 'Open Sans', sans-serif;
             font-weight: 300;
             color: #fff;
             display: flex;
             flex-direction: column;
         }
 
+        /* ── Header ── */
         .header {
             display: flex;
             justify-content: space-between;
@@ -32,7 +35,7 @@
             border: none;
             padding: 6px 14px;
             border-radius: 6px;
-            font-family: inherit;
+            font-family: 'Open Sans', sans-serif;
             font-weight: 300;
             font-size: 12px;
             cursor: pointer;
@@ -40,6 +43,7 @@
         }
         .btn-sim:active { opacity: 0.8; }
 
+        /* ── Section label ── */
         .section-label {
             padding: 0 20px 10px;
             font-size: 12px;
@@ -49,6 +53,7 @@
             flex-shrink: 0;
         }
 
+        /* ── Stops list ── */
         .stops-area {
             flex: 1;
             overflow-y: auto;
@@ -56,7 +61,7 @@
             -webkit-overflow-scrolling: touch;
         }
         .stop-chip {
-            background: rgba(255,255,255,0.12);
+            background: rgba(255, 255, 255, 0.12);
             padding: 13px 16px;
             border-radius: 8px;
             margin-bottom: 8px;
@@ -80,6 +85,38 @@
             line-height: 1.7;
         }
 
+        /* ── Mic button ── */
+        .mic-wrap { display: flex; justify-content: center; flex-shrink: 0; padding: 0 20px 6px; }
+        .btn-mic {
+            width: 62px; height: 62px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.35);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .btn-mic svg { width: 28px; height: 28px; fill: #fff; }
+        .btn-mic:active { background: rgba(255,255,255,0.12); }
+        .btn-mic.listening {
+            border-color: #fff;
+            background: rgba(255,255,255,0.18);
+            animation: pulse-mic 1.2s ease-in-out infinite;
+        }
+        .btn-mic.processing {
+            border-color: rgba(255,255,255,0.5);
+            background: transparent;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        @keyframes pulse-mic {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.3); }
+            50% { box-shadow: 0 0 0 12px rgba(255,255,255,0); }
+        }
+
+        /* ── Bottom actions ── */
         .actions {
             padding: 14px 20px 32px;
             display: flex;
@@ -93,7 +130,7 @@
             border: none;
             padding: 15px 20px;
             border-radius: 8px;
-            font-family: inherit;
+            font-family: 'Open Sans', sans-serif;
             font-weight: 300;
             font-size: 16px;
             cursor: pointer;
@@ -117,17 +154,18 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ── Modal ── */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0);
+            background: rgba(0, 0, 0, 0);
             z-index: 100;
             display: flex;
             align-items: flex-end;
             pointer-events: none;
             transition: background 0.25s;
         }
-        .modal-overlay.active { background: rgba(0,0,0,0.5); pointer-events: auto; }
+        .modal-overlay.active { background: rgba(0, 0, 0, 0.5); pointer-events: auto; }
 
         .modal {
             background: #7a0e1a;
@@ -169,7 +207,7 @@
             margin-bottom: 8px;
             cursor: pointer;
             font-size: 15px;
-            font-family: inherit;
+            font-family: 'Open Sans', sans-serif;
             font-weight: 300;
             transition: opacity 0.15s;
             display: flex;
@@ -180,6 +218,52 @@
         .modal-item.added { opacity: 0.35; pointer-events: none; }
         .modal-item .check { font-size: 13px; opacity: 0.5; }
 
+        /* ── API key modal ── */
+        .key-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .key-overlay.hidden { display: none; }
+        .key-box {
+            background: #7a0e1a;
+            border-radius: 16px;
+            padding: 24px 20px;
+            width: 100%;
+            max-width: 340px;
+        }
+        .key-box h2 { font-size: 18px; font-weight: 300; margin-bottom: 6px; }
+        .key-box p { font-size: 13px; opacity: 0.6; margin-bottom: 16px; line-height: 1.5; }
+        .key-box input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            margin-bottom: 12px;
+            background: rgba(255,255,255,0.95);
+            color: #000;
+        }
+        .key-box button {
+            width: 100%;
+            padding: 13px;
+            border-radius: 8px;
+            border: none;
+            background: #fff;
+            color: #000;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 300;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        /* ── Toast ── */
         .toast {
             position: fixed;
             top: 18px;
@@ -190,11 +274,11 @@
             padding: 10px 22px;
             border-radius: 8px;
             font-size: 14px;
-            font-family: inherit;
+            font-family: 'Open Sans', sans-serif;
             font-weight: 300;
             z-index: 200;
             transition: transform 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             white-space: nowrap;
             max-width: 90vw;
             overflow: hidden;
@@ -216,6 +300,12 @@
         <div class="empty-state">No stops added yet.<br>Tap Simulate Tap or add manually.</div>
     </div>
 
+    <div class="mic-wrap">
+        <button class="btn-mic" id="btnMic" onclick="voiceCommand()">
+            <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3zm-1-9a1 1 0 1 1 2 0v6a1 1 0 1 1-2 0V5zm6 6a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93V21h2v-3.07A7 7 0 0 0 19 11h-2z"/></svg>
+        </button>
+    </div>
+
     <div class="actions">
         <button class="btn" onclick="clearLast()">Clear Last Added Stop</button>
         <button class="btn" onclick="openModal()">Add Stop Manually</button>
@@ -234,270 +324,360 @@
         </div>
     </div>
 
+    <div class="key-overlay hidden" id="keyOverlay">
+        <div class="key-box">
+            <h2>Voice Assistant Setup</h2>
+            <p>Enter your x.ai API key to enable the voice assistant. Get one at console.x.ai</p>
+            <input type="password" id="keyInput" placeholder="xai-...">
+            <button onclick="saveApiKey()">Save</button>
+        </div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
-<script>
-// ── Embedded data ──────────────────────────────────────────────────────────────
-var MD = {"codes":["Centre+Annie","Centre+Walgreens","Fifth+Bellefont","Fifth+College","Fifth+Emerson","Fifth+Maryland","Fifth+S.Aiken","Fifth+S.Highland","Fifth+S.Negley","Fifth+Wilkins","Friendship+Roup","Friendship+S.Aiken","Friendship+S.Atlantic","Friendship+S.Fairmount","Friendship+S.Graham","Friendship+S.Pacific","Friendship+Stratford","Harriet+Roup","Harriet+S.Aiken","Harriet+S.Atlantic","Harriet+S.Graham","Harriet+S.Pacific","Penn+Target","Penn+Wholefoods","S.Aiken+Baum","S.Beatty+Centre","S.Highland+Centre","S.Negley+Baum","S.Negley+Friendship","S.Negley+Penn","Shady+Alder","Shady+Aurelia","Shady+Ellsworth","Shady+Fifth","Shady+Howe","Shady+Kentucky","Shady+Marchand","Shady+Walnut"],"lats":[40.4602852,40.4593964,40.4489059,40.4511948,40.4525833,40.4505157,40.4483948,40.4519463,40.4498329,40.4478149,40.4616241,40.4619102,40.4620132,40.4612999,40.4617653,40.4621277,40.46101,40.4593048,40.4595947,40.4596977,40.4594498,40.4598007,40.4600868,40.4625053,40.4569511,40.4593849,40.4599533,40.4583549,40.4605789,40.4632607,40.4567986,40.4580956,40.4592133,40.4528961,40.4545403,40.4537201,40.4572258,40.4558716],"lons":[-79.9239578,-79.9268875,-79.9325714,-79.9258194,-79.9223938,-79.9275055,-79.934227,-79.923996,-79.929657,-79.9371109,-79.9350662,-79.9376221,-79.9389801,-79.9341583,-79.9363174,-79.9403763,-79.9332962,-79.9354935,-79.9380646,-79.93927,-79.9367371,-79.9406891,-79.9215012,-79.9279633,-79.9385376,-79.9275436,-79.9250336,-79.9338455,-79.9324722,-79.9308319,-79.9224777,-79.9222565,-79.9220123,-79.9207306,-79.9217224,-79.9212265,-79.9224091,-79.9225616],"dist_m":[[0,267,1460,1023,866,1127,1582,927,1258,1778,951,1170,1285,870,1058,1404,794,982,1195,1296,1085,1416,209,419,1288,319,97,863,721,668,407,282,203,865,666,765,364,504],[267,0,1261,916,847,988,1371,864,1088,1551,734,950,1063,650,839,1180,570,728,945,1047,833,1168,462,357,1022,55,169,599,490,543,472,417,413,891,694,792,449,536],[1460,1261,0,625,952,464,151,800,267,403,1429,1507,1555,1384,1464,1611,1347,1182,1275,1326,1224,1392,1556,1561,1027,1240,1384,1055,1297,1602,1224,1343,1452,1095,1111,1098,1262,1147],[1023,916,625,0,327,161,776,175,358,1027,1399,1554,1639,1326,1473,1730,1261,1218,1394,1479,1302,1580,1054,1270,1252,922,976,1046,1185,1407,684,824,947,470,508,479,730,588],[866,847,952,327,0,489,1104,152,685,1353,1469,1653,1751,1389,1558,1855,1314,1336,1537,1632,1433,1743,837,1199,1449,872,849,1162,1231,1385,468,613,737,145,225,160,516,365],[1127,988,464,161,489,0,615,336,196,866,1390,1528,1605,1324,1455,1689,1265,1188,1347,1425,1263,1519,1179,1333,1176,986,1070,1023,1195,1444,818,952,1072,631,663,639,861,727],[1582,1371,151,776,1104,615,0,951,418,252,1472,1529,1566,1434,1497,1613,1404,1217,1286,1327,1247,1381,1688,1655,1018,1346,1502,1107,1362,1677,1364,1479,1585,1247,1259,1249,1401,1290],[927,864,800,175,152,336,951,0,533,1201,1426,1599,1691,1349,1509,1789,1278,1271,1462,1553,1363,1660,929,1221,1350,880,894,1096,1198,1384,554,699,825,295,347,306,602,453],[1258,1088,267,358,685,196,418,533,0,669,1388,1502,1567,1330,1441,1640,1280,1163,1297,1365,1225,1449,1332,1416,1091,1077,1191,1011,1218,1496,984,1111,1227,828,851,833,1025,900],[1778,1551,403,1027,1353,866,252,1201,669,0,1545,1567,1586,1520,1552,1615,1502,1285,1312,1334,1294,1366,1899,1807,1023,1520,1693,1204,1472,1797,1591,1699,1799,1497,1502,1495,1626,1522],[951,734,1429,1399,1469,1390,1472,1426,1388,1545,0,218,334,84,106,452,164,260,339,415,280,517,1160,608,597,683,869,378,248,401,1192,1152,1136,1553,1376,1463,1177,1236],[1170,950,1507,1554,1653,1528,1529,1599,1502,1567,218,0,115,301,112,234,379,340,260,282,283,349,1379,819,556,897,1087,508,460,594,1401,1367,1354,1745,1575,1659,1388,1440],[1285,1063,1555,1639,1751,1605,1566,1691,1567,1586,334,115,0,415,227,118,493,421,280,258,342,285,1494,933,564,1010,1202,595,573,703,1512,1480,1469,1847,1680,1762,1500,1547],[870,650,1384,1326,1389,1324,1434,1349,1330,1520,84,301,415,0,189,534,79,248,381,467,300,576,1079,540,609,598,786,328,163,356,1107,1068,1053,1471,1293,1380,1092,1151],[1058,839,1464,1473,1558,1455,1497,1509,1441,1552,106,112,227,189,0,346,268,282,283,339,259,429,1267,710,567,787,975,432,350,492,1294,1257,1242,1646,1473,1558,1280,1335],[1404,1180,1611,1730,1855,1689,1613,1789,1640,1615,452,234,118,534,346,0,611,518,343,286,428,260,1613,1050,596,1127,1320,693,690,817,1626,1597,1587,1953,1789,1870,1615,1659],[794,570,1347,1261,1314,1265,1404,1278,1280,1502,164,379,493,79,268,611,0,265,432,525,338,639,1003,480,632,519,709,299,84,325,1028,988,975,1394,1215,1303,1012,1072],[982,728,1182,1218,1336,1188,1217,1271,1163,1285,260,340,421,248,282,518,265,0,219,322,106,442,1187,729,367,672,888,175,292,590,1136,1128,1140,1438,1280,1357,1131,1158],[1195,945,1275,1394,1537,1347,1286,1462,1297,1312,339,260,280,381,283,343,432,219,0,102,113,223,1402,913,296,890,1103,382,485,735,1354,1347,1358,1644,1492,1566,1350,1375],[1296,1047,1326,1479,1632,1425,1327,1553,1365,1334,415,282,258,467,339,286,525,322,102,0,215,120,1503,1005,311,992,1204,482,583,816,1456,1450,1460,1741,1591,1664,1452,1475],[1085,833,1224,1302,1433,1263,1247,1363,1225,1294,280,283,342,300,259,428,338,106,113,215,0,336,1291,816,316,777,992,273,382,655,1242,1234,1246,1538,1382,1458,1237,1263],[1416,1168,1392,1580,1743,1519,1381,1660,1449,1366,517,349,285,576,429,260,639,442,223,120,336,0,1623,1117,365,1112,1324,600,700,918,1576,1570,1581,1855,1707,1779,1572,1594],[209,462,1556,1054,837,1179,1688,929,1332,1899,1160,1379,1494,1079,1267,1613,1003,1187,1402,1503,1291,1623,0,609,1483,517,299,1062,929,864,374,230,106,802,616,708,327,477],[419,357,1561,1270,1199,1333,1655,1221,1416,1807,608,819,933,540,710,1050,480,729,913,1005,816,1117,609,0,1086,348,377,678,437,256,786,688,622,1231,1031,1130,752,867],[1288,1022,1027,1252,1449,1176,1018,1350,1091,1023,597,556,564,609,567,596,632,367,296,311,316,365,1483,1086,0,968,1190,426,652,957,1359,1383,1420,1572,1448,1508,1365,1356],[319,55,1240,922,872,986,1346,880,1077,1520,683,897,1010,598,787,1127,519,672,890,992,777,1112,517,348,968,0,222,545,437,512,516,469,468,923,730,826,496,574],[97,169,1384,976,849,1070,1502,894,1191,1693,869,1087,1202,786,975,1320,709,888,1103,1204,992,1324,299,377,1190,222,0,766,633,613,411,312,268,865,663,764,375,499],[863,599,1055,1046,1162,1023,1107,1096,1011,1204,378,508,595,328,432,693,299,175,382,482,273,600,1062,678,426,545,766,0,273,602,977,981,1005,1265,1110,1185,976,993],[721,490,1297,1185,1231,1195,1362,1198,1218,1472,248,460,573,163,350,690,84,292,485,583,382,700,929,437,652,437,633,273,0,329,944,907,897,1310,1130,1219,929,988],[668,543,1602,1407,1385,1444,1677,1384,1496,1797,401,594,703,356,492,817,325,590,735,816,655,918,864,256,957,512,613,602,329,0,1007,925,871,1434,1238,1336,978,1078],[407,472,1224,684,468,818,1364,554,984,1591,1192,1401,1512,1107,1294,1626,1028,1136,1354,1456,1242,1576,374,786,1359,516,411,977,944,1007,0,145,271,458,259,358,47,103],[282,417,1343,824,613,952,1479,699,1111,1699,1152,1367,1480,1068,1257,1597,988,1128,1347,1450,1234,1570,230,688,1383,469,312,981,907,925,145,0,125,592,397,494,97,248],[203,413,1452,947,737,1072,1585,825,1227,1799,1136,1354,1469,1053,1242,1587,975,1140,1358,1460,1246,1581,106,622,1420,468,268,1005,897,871,271,125,0,710,519,614,223,374],[865,891,1095,470,145,631,1247,295,828,1497,1553,1745,1847,1471,1646,1953,1394,1438,1644,1741,1538,1855,802,1231,1572,923,865,1265,1310,1434,458,592,710,0,201,100,501,365],[666,694,1111,508,225,663,1259,347,851,1502,1376,1575,1680,1293,1473,1789,1215,1280,1492,1591,1382,1707,616,1031,1448,730,663,1110,1130,1238,259,397,519,201,0,100,304,164],[765,792,1098,479,160,639,1249,306,833,1495,1463,1659,1762,1380,1558,1870,1303,1357,1566,1664,1458,1779,708,1130,1508,826,764,1185,1219,1336,358,494,614,100,100,0,402,264],[364,449,1262,730,516,861,1401,602,1025,1626,1177,1388,1500,1092,1280,1615,1012,1131,1350,1452,1237,1572,327,752,1365,496,375,976,929,978,47,97,223,501,304,402,0,151],[504,536,1147,588,365,727,1290,453,900,1522,1236,1440,1547,1151,1335,1659,1072,1158,1375,1475,1263,1594,477,867,1356,574,499,993,988,1078,103,248,374,365,164,264,151,0]]};
+    <script>
+        const ALL_STOPS = {"Fifth+Wilkins":{"name":"Fifth+Wilkins","latitude":40.4478138,"longitude":-79.937114},"Fifth+S.Aiken":{"name":"Fifth+S.Aiken","latitude":40.4483955,"longitude":-79.934228},"Fifth+Bellefont":{"name":"Fifth+Bellefont","latitude":40.4489078,"longitude":-79.9325703},"Fifth+S.Negley":{"name":"Fifth+S.Negley","latitude":40.4498324,"longitude":-79.9296548},"Fifth+Maryland":{"name":"Fifth+Maryland","latitude":40.4505163,"longitude":-79.9275075},"Fifth+College":{"name":"Fifth+College","latitude":40.4511939,"longitude":-79.9258177},"Fifth+S.Highland":{"name":"Fifth+S.Highland","latitude":40.451945,"longitude":-79.9239958},"Fifth+Emerson":{"name":"Fifth+Emerson","latitude":40.4525818,"longitude":-79.9223972},"Shady+Fifth":{"name":"Shady+Fifth","latitude":40.4528961,"longitude":-79.9207289},"Shady+Kentucky":{"name":"Shady+Kentucky","latitude":40.45372,"longitude":-79.9212297},"Shady+Howe":{"name":"Shady+Howe","latitude":40.4545416,"longitude":-79.9217206},"Shady+Walnut":{"name":"Shady+Walnut","latitude":40.4558708,"longitude":-79.9225644},"Shady+Alder":{"name":"Shady+Alder","latitude":40.456799,"longitude":-79.9224782},"Shady+Marchand":{"name":"Shady+Marchand","latitude":40.4572257,"longitude":-79.9224066},"Shady+Aurelia":{"name":"Shady+Aurelia","latitude":40.4580951,"longitude":-79.9222564},"Shady+Ellsworth":{"name":"Shady+Ellsworth","latitude":40.4592123,"longitude":-79.9220137},"Penn+Target":{"name":"Penn+Target","latitude":40.460087,"longitude":-79.9215},"Centre+Annie":{"name":"Centre+Annie","latitude":40.4602854,"longitude":-79.9239566},"S.Highland+Centre":{"name":"S.Highland+Centre","latitude":40.4599543,"longitude":-79.9250299},"Centre+Walgreens":{"name":"Centre+Walgreens","latitude":40.4593966,"longitude":-79.9268905},"S.Beatty+Centre":{"name":"S.Beatty+Centre","latitude":40.4593847,"longitude":-79.9275464},"Penn+Wholefoods":{"name":"Penn+Wholefoods","latitude":40.4625046,"longitude":-79.9279665},"S.Negley+Penn":{"name":"S.Negley+Penn","latitude":40.4632602,"longitude":-79.9308295},"S.Negley+Friendship":{"name":"S.Negley+Friendship","latitude":40.4605776,"longitude":-79.932473},"Friendship+Stratford":{"name":"Friendship+Stratford","latitude":40.4610102,"longitude":-79.9332977},"Friendship+S.Fairmount":{"name":"Friendship+S.Fairmount","latitude":40.4613005,"longitude":-79.9341581},"Friendship+Roup":{"name":"Friendship+Roup","latitude":40.461625,"longitude":-79.9350647},"Friendship+S.Graham":{"name":"Friendship+S.Graham","latitude":40.4617658,"longitude":-79.936314},"Friendship+S.Aiken":{"name":"Friendship+S.Aiken","latitude":40.4619092,"longitude":-79.937625},"Friendship+S.Atlantic":{"name":"Friendship+S.Atlantic","latitude":40.4620147,"longitude":-79.9389829},"Friendship+S.Pacific":{"name":"Friendship+S.Pacific","latitude":40.4621285,"longitude":-79.9403774},"Harriet+S.Pacific":{"name":"Harriet+S.Pacific","latitude":40.4598014,"longitude":-79.9406872},"Harriet+S.Atlantic":{"name":"Harriet+S.Atlantic","latitude":40.4596989,"longitude":-79.9392669},"Harriet+S.Aiken":{"name":"Harriet+S.Aiken","latitude":40.4595931,"longitude":-79.9380628},"Harriet+S.Graham":{"name":"Harriet+S.Graham","latitude":40.4594503,"longitude":-79.936739},"Harriet+Roup":{"name":"Harriet+Roup","latitude":40.4593059,"longitude":-79.9354953},"S.Negley+Baum":{"name":"S.Negley+Baum","latitude":40.458354,"longitude":-79.933848},"S.Aiken+Baum":{"name":"S.Aiken+Baum","latitude":40.4569516,"longitude":-79.9385394}};
 
-var ORIGIN = {lat: 40.440649349938596, lon: -79.94213453828381};
-var DEST   = {lat: 40.44570333393433,  lon: -79.94921687512655};
-var BIG_M  = 1e9;
+        const CMU_ORIGIN = { latitude: 40.4433, longitude: -79.9436 };
 
-var codeToIdx = {};
-MD.codes.forEach(function(c, i) { codeToIdx[c] = i; });
+        let stops = {};
 
-// ── State ──────────────────────────────────────────────────────────────────────
-var stopOrder = [];  // codes in insertion order
+        function loadStops() {
+            try {
+                const saved = localStorage.getItem('cmu_escort_stops');
+                stops = saved ? JSON.parse(saved) : {};
+            } catch (e) { stops = {}; }
+        }
 
-// ── Math ───────────────────────────────────────────────────────────────────────
-function haversine(lat1, lon1, lat2, lon2) {
-    var R = 6371000, toRad = Math.PI / 180;
-    var dLat = (lat2 - lat1) * toRad, dLon = (lon2 - lon1) * toRad;
-    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(lat1 * toRad) * Math.cos(lat2 * toRad) *
-            Math.sin(dLon/2) * Math.sin(dLon/2);
-    return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
+        function saveStops() {
+            localStorage.setItem('cmu_escort_stops', JSON.stringify(stops));
+        }
 
-// ── TSP: Held-Karp (exact, for n <= 18) ────────────────────────────────────────
-function heldKarp(D, n) {
-    var ALL = (1 << n) - 1;
-    var dp = new Float64Array((1 << n) * n);
-    var par = new Int8Array((1 << n) * n);
-    var i, mask, u, v, nm, nc, idx;
-    for (i = 0; i < dp.length; i++) { dp[i] = BIG_M; par[i] = -1; }
-    dp[1 * n + 0] = 0;
+        function getApiKey() { return localStorage.getItem('cmu_escort_xai_key') || ''; }
 
-    for (mask = 1; mask <= ALL; mask++) {
-        for (u = 0; u < n; u++) {
-            idx = mask * n + u;
-            if (!(mask & (1 << u)) || dp[idx] >= BIG_M) continue;
-            for (v = 0; v < n; v++) {
-                if (mask & (1 << v)) continue;
-                nm = mask | (1 << v);
-                nc = dp[idx] + D[u * n + v];
-                if (nc < dp[nm * n + v]) {
-                    dp[nm * n + v] = nc;
-                    par[nm * n + v] = u;
-                }
+        function saveApiKey() {
+            const key = document.getElementById('keyInput').value.trim();
+            if (!key) return;
+            localStorage.setItem('cmu_escort_xai_key', key);
+            document.getElementById('keyOverlay').classList.add('hidden');
+            toast('API key saved');
+        }
+
+        function promptApiKey() {
+            document.getElementById('keyInput').value = getApiKey();
+            document.getElementById('keyOverlay').classList.remove('hidden');
+        }
+
+        function init() {
+            loadStops();
+            render();
+        }
+
+        function render() {
+            const area = document.getElementById('stopsArea');
+            const keys = Object.keys(stops);
+            document.getElementById('label').textContent = 'Stops (' + keys.length + ')';
+            if (!keys.length) {
+                area.innerHTML = '<div class="empty-state">No stops added yet.<br>Tap Simulate Tap or add manually.</div>';
+                return;
             }
+            area.innerHTML = keys.map((c, i) =>
+                '<div class="stop-chip"><span class="num">' + (i + 1) + '</span>' + stops[c].name + '</div>'
+            ).join('');
+            area.scrollTop = area.scrollHeight;
         }
-    }
 
-    var best = BIG_M, last = -1;
-    for (u = 1; u < n; u++) {
-        var c = dp[ALL * n + u] + D[u * n + 0];
-        if (c < best) { best = c; last = u; }
-    }
-
-    var path = [];
-    mask = ALL; u = last;
-    while (u !== 0) {
-        path.push(u);
-        var p = par[mask * n + u];
-        mask ^= (1 << u);
-        u = p;
-    }
-    path.push(0);
-    path.reverse();
-    return path;
-}
-
-// ── TSP: Nearest-neighbor + 2-opt (heuristic, for n > 18) ─────────────────────
-function nearestNeighbor(D, n) {
-    var visited = new Uint8Array(n);
-    var path = [0]; visited[0] = 1;
-    var cur = 0;
-    for (var step = 1; step < n; step++) {
-        var best = -1, bestD = BIG_M;
-        for (var v = 0; v < n; v++) {
-            if (visited[v]) continue;
-            var d = D[cur * n + v];
-            if (d < bestD) { bestD = d; best = v; }
+        function toast(msg, err) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show' + (err ? ' err' : '');
+            clearTimeout(toast._tid);
+            toast._tid = setTimeout(() => t.className = 'toast', 2200);
         }
-        path.push(best);
-        visited[best] = 1;
-        cur = best;
-    }
-    return path;
-}
 
-function tourCost(D, n, path) {
-    var c = 0;
-    for (var i = 0; i < path.length - 1; i++) c += D[path[i] * n + path[i+1]];
-    c += D[path[path.length-1] * n + path[0]];
-    return c;
-}
+        function simulateTap() {
+            const available = Object.keys(ALL_STOPS).filter(k => !(k in stops));
+            if (!available.length) { toast('All stops already added', true); return; }
+            const code = available[Math.floor(Math.random() * available.length)];
+            stops[code] = ALL_STOPS[code];
+            saveStops();
+            render();
+            toast('Added ' + code);
+        }
 
-function twoOpt(D, n, path) {
-    var improved = true;
-    while (improved) {
-        improved = false;
-        for (var i = 1; i < path.length - 1; i++) {
-            for (var j = i + 1; j < path.length; j++) {
-                var a = path[i-1], b = path[i], c = path[j], d = path[(j+1) % path.length];
-                var old = D[a*n+b] + D[c*n+d];
-                var nw  = D[a*n+c] + D[b*n+d];
-                if (nw < old - 0.5) {
-                    var seg = path.slice(i, j+1);
-                    seg.reverse();
-                    for (var x = 0; x < seg.length; x++) path[i+x] = seg[x];
-                    improved = true;
-                }
+        function clearLast() {
+            const keys = Object.keys(stops);
+            if (!keys.length) { toast('No stops to clear', true); return; }
+            const removed = keys[keys.length - 1];
+            delete stops[removed];
+            saveStops();
+            render();
+            toast('Removed ' + removed);
+        }
+
+        function addStop(code) {
+            if (!(code in ALL_STOPS)) { toast('Invalid stop', true); return; }
+            if (code in stops) { toast('Already added', true); return; }
+            stops[code] = ALL_STOPS[code];
+            saveStops();
+            render();
+            closeModal();
+            toast('Added ' + code);
+        }
+
+        function openModal() {
+            const el = document.getElementById('modalList');
+            const cur = new Set(Object.keys(stops));
+            el.innerHTML = Object.keys(ALL_STOPS).map(code => {
+                const added = cur.has(code);
+                return '<div class="modal-item' + (added ? ' added' : '') + '" onclick="addStop(\'' + code + '\')">'
+                    + '<span>' + ALL_STOPS[code].name + '</span>'
+                    + (added ? '<span class="check">added</span>' : '')
+                    + '</div>';
+            }).join('');
+            document.getElementById('overlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        document.getElementById('overlay').addEventListener('click', function (e) {
+            if (e.target === this) closeModal();
+        });
+
+        // ── Nearest-neighbor route & Google Maps URL ──
+
+        function haversine(a, b) {
+            const R = 6371000;
+            const toRad = x => x * Math.PI / 180;
+            const dLat = toRad(b.latitude - a.latitude);
+            const dLon = toRad(b.longitude - a.longitude);
+            const sin2 = Math.sin(dLat / 2) ** 2 +
+                Math.cos(toRad(a.latitude)) * Math.cos(toRad(b.latitude)) * Math.sin(dLon / 2) ** 2;
+            return R * 2 * Math.atan2(Math.sqrt(sin2), Math.sqrt(1 - sin2));
+        }
+
+        function nearestNeighborOrder(points) {
+            if (points.length <= 1) return points.map((_, i) => i);
+            const visited = new Set();
+            const order = [];
+            let current = 0;
+            let bestStart = 0, bestDist = Infinity;
+            for (let i = 0; i < points.length; i++) {
+                const d = haversine(CMU_ORIGIN, points[i]);
+                if (d < bestDist) { bestDist = d; bestStart = i; }
             }
+            current = bestStart;
+            visited.add(current);
+            order.push(current);
+            while (order.length < points.length) {
+                let nearest = -1, nearDist = Infinity;
+                for (let j = 0; j < points.length; j++) {
+                    if (visited.has(j)) continue;
+                    const d = haversine(points[current], points[j]);
+                    if (d < nearDist) { nearDist = d; nearest = j; }
+                }
+                visited.add(nearest);
+                order.push(nearest);
+                current = nearest;
+            }
+            return order;
         }
-    }
-    return path;
-}
 
-// ── Route planner ──────────────────────────────────────────────────────────────
-function planRouteLogic(codes) {
-    var k = codes.length;
-    if (k === 0) {
-        return fmtUrl(ORIGIN.lat, ORIGIN.lon, DEST.lat, DEST.lon, []);
-    }
-
-    var n = k + 2;
-    var D = new Float64Array(n * n);
-    var gIdx = codes.map(function(c) { return codeToIdx[c]; });
-    var sLat = gIdx.map(function(i) { return MD.lats[i]; });
-    var sLon = gIdx.map(function(i) { return MD.lons[i]; });
-    var DES = n - 1;
-    var i, j;
-
-    for (i = 0; i < k; i++) {
-        for (j = 0; j < k; j++) {
-            D[(1+i)*n + (1+j)] = (i === j) ? 0 : MD.dist_m[gIdx[i]][gIdx[j]];
-        }
-    }
-
-    for (j = 0; j < k; j++) {
-        D[0*n + (1+j)]     = haversine(ORIGIN.lat, ORIGIN.lon, sLat[j], sLon[j]);
-        D[(1+j)*n + 0]     = BIG_M;
-        D[(1+j)*n + DES]   = haversine(sLat[j], sLon[j], DEST.lat, DEST.lon);
-        D[DES*n + (1+j)]   = BIG_M;
-    }
-
-    D[0*n + DES] = haversine(ORIGIN.lat, ORIGIN.lon, DEST.lat, DEST.lon);
-    D[DES*n + 0] = 0;
-
-    var perm;
-    if (n <= 18) {
-        perm = heldKarp(D, n);
-    } else {
-        perm = nearestNeighbor(D, n);
-        perm = twoOpt(D, n, perm);
-    }
-
-    var waypoints = [];
-    for (i = 1; i < perm.length; i++) {
-        if (perm[i] === DES) break;
-        var si = perm[i] - 1;
-        waypoints.push({lat: sLat[si], lon: sLon[si]});
-    }
-
-    return fmtUrl(ORIGIN.lat, ORIGIN.lon, DEST.lat, DEST.lon, waypoints);
-}
-
-function fmtUrl(oLat, oLon, dLat, dLon, wps) {
-    var url = 'https://www.google.com/maps/dir/?api=1'
-        + '&origin=' + oLat.toFixed(6) + ',' + oLon.toFixed(6)
-        + '&destination=' + dLat.toFixed(6) + ',' + dLon.toFixed(6);
-    if (wps.length) {
-        url += '&waypoints=' + wps.map(function(w) { return w.lat.toFixed(6)+','+w.lon.toFixed(6); }).join('|');
-    }
-    url += '&travelmode=driving';
-    return url;
-}
-
-// ── UI ─────────────────────────────────────────────────────────────────────────
-function render() {
-    var area = document.getElementById('stopsArea');
-    document.getElementById('label').textContent = 'Stops (' + stopOrder.length + ')';
-    if (!stopOrder.length) {
-        area.innerHTML = '<div class="empty-state">No stops added yet.<br>Tap Simulate Tap or add manually.</div>';
-        return;
-    }
-    area.innerHTML = stopOrder.map(function(c, i) {
-        return '<div class="stop-chip"><span class="num">' + (i+1) + '</span>' + c + '</div>';
-    }).join('');
-    area.scrollTop = area.scrollHeight;
-}
-
-var _tid;
-function toast(msg, err) {
-    var t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast show' + (err ? ' err' : '');
-    clearTimeout(_tid);
-    _tid = setTimeout(function() { t.className = 'toast'; }, 2200);
-}
-
-function simulateTap() {
-    var used = new Set(stopOrder);
-    var avail = MD.codes.filter(function(c) { return !used.has(c); });
-    if (!avail.length) { toast('All stops already added', true); return; }
-    var code = avail[Math.floor(Math.random() * avail.length)];
-    stopOrder.push(code);
-    render();
-    toast('Added ' + code);
-}
-
-function clearLast() {
-    if (!stopOrder.length) { toast('No stops to clear', true); return; }
-    var removed = stopOrder.pop();
-    render();
-    toast('Removed ' + removed);
-}
-
-function openModal() {
-    var el = document.getElementById('modalList');
-    var cur = new Set(stopOrder);
-    el.innerHTML = MD.codes.map(function(code) {
-        var added = cur.has(code);
-        return '<div class="modal-item' + (added ? ' added' : '') + '" onclick="addStop(\'' + code + '\')">'
-            + '<span>' + code + '</span>'
-            + (added ? '<span class="check">added</span>' : '')
-            + '</div>';
-    }).join('');
-    document.getElementById('overlay').classList.add('active');
-}
-
-function closeModal() {
-    document.getElementById('overlay').classList.remove('active');
-}
-
-document.getElementById('overlay').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
-});
-
-function addStop(code) {
-    if (stopOrder.indexOf(code) !== -1) { toast('Stop already added', true); return; }
-    stopOrder.push(code);
-    render();
-    closeModal();
-    toast('Added ' + code);
-}
-
-function planRoute() {
-    if (!stopOrder.length) { toast('Add at least one stop first', true); return; }
-    var btn = document.getElementById('btnPlan');
-    btn.classList.add('loading');
-    btn.disabled = true;
-    setTimeout(function() {
-        try {
-            var url = planRouteLogic(stopOrder);
+        function planRoute() {
+            const keys = Object.keys(stops);
+            if (!keys.length) { toast('Add at least one stop first', true); return; }
+            const points = keys.map(k => stops[k]);
+            const order = nearestNeighborOrder(points);
+            const origin = CMU_ORIGIN.latitude + ',' + CMU_ORIGIN.longitude;
+            const dest = origin;
+            const waypoints = order.map(i => points[i].latitude + ',' + points[i].longitude).join('|');
+            const url = 'https://www.google.com/maps/dir/?api=1'
+                + '&origin=' + origin
+                + '&destination=' + dest
+                + '&waypoints=' + encodeURIComponent(waypoints)
+                + '&travelmode=driving';
             window.location.href = url;
-        } catch(e) {
-            toast('Route planning failed: ' + e.message, true);
         }
-        btn.classList.remove('loading');
-        btn.disabled = false;
-    }, 50);
-}
 
-render();
-</script>
+        // ── Voice assistant (x.ai Grok) ──
+
+        const VOICE_TOOLS = [
+            {
+                type: "function",
+                function: {
+                    name: "clear_last",
+                    description: "Remove the most recently added stop from the route.",
+                    parameters: { type: "object", properties: {} }
+                }
+            },
+            {
+                type: "function",
+                function: {
+                    name: "add_stop",
+                    description: "Add a stop by its code (intersection name like 'Centre+Annie').",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            code: { type: "string", description: "Stop code, e.g. 'Centre+Annie', 'Fifth+S.Negley'" }
+                        },
+                        required: ["code"]
+                    }
+                }
+            },
+            {
+                type: "function",
+                function: {
+                    name: "plan_route",
+                    description: "Plan an optimized route through all current stops and open Google Maps.",
+                    parameters: { type: "object", properties: {} }
+                }
+            }
+        ];
+
+        function buildSystemPrompt() {
+            const codes = Object.keys(ALL_STOPS).join(', ');
+            const current = Object.keys(stops);
+            const currentList = current.length ? current.join(', ') : '(none)';
+            return "You are a voice assistant for a CMU Escort bus driver. "
+                + "The driver speaks commands to manage tonight's route stops.\n\n"
+                + "Valid stop codes: " + codes + "\n\n"
+                + "Currently added stops: " + currentList + "\n\n"
+                + "When the driver names an intersection, match it to the closest valid stop code. "
+                + "For example 'Center and Aiken' could mean 'Centre+Annie' — pick the best match. "
+                + "'Fifth and Negley' means 'Fifth+S.Negley'. 'Walgreens' means 'Centre+Walgreens'. "
+                + "'Whole Foods' means 'Penn+Wholefoods'. 'Target' means 'Penn+Target'. "
+                + "Use the tools to carry out the driver's request. You may call multiple tools in sequence. "
+                + "After executing, reply with a brief one-sentence confirmation of what you did.";
+        }
+
+        function execTool(name, args) {
+            if (name === 'clear_last') {
+                const keys = Object.keys(stops);
+                if (!keys.length) return { error: "No stops to clear" };
+                const removed = keys[keys.length - 1];
+                delete stops[removed];
+                saveStops();
+                return { removed: removed, stops_count: Object.keys(stops).length };
+            }
+            if (name === 'add_stop') {
+                const code = args.code || '';
+                if (!(code in ALL_STOPS)) return { error: "Invalid stop code: " + code };
+                if (code in stops) return { error: "Stop already added: " + code };
+                stops[code] = ALL_STOPS[code];
+                saveStops();
+                return { added: code, stops_count: Object.keys(stops).length };
+            }
+            if (name === 'plan_route') {
+                if (!Object.keys(stops).length) return { error: "No stops to plan" };
+                return { result: "Route will open in Google Maps after this response." };
+            }
+            return { error: "Unknown tool" };
+        }
+
+        async function callGrok(messages) {
+            const key = getApiKey();
+            const res = await fetch('https://api.x.ai/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + key
+                },
+                body: JSON.stringify({
+                    model: 'grok-3-mini',
+                    messages: messages,
+                    tools: VOICE_TOOLS,
+                    tool_choice: 'auto'
+                })
+            });
+            if (!res.ok) {
+                const err = await res.text();
+                throw new Error('API error: ' + res.status);
+            }
+            return await res.json();
+        }
+
+        async function runVoiceAgent(transcript) {
+            const messages = [
+                { role: 'system', content: buildSystemPrompt() },
+                { role: 'user', content: transcript }
+            ];
+
+            let shouldPlanRoute = false;
+
+            for (let i = 0; i < 5; i++) {
+                const data = await callGrok(messages);
+                const msg = data.choices[0].message;
+
+                if (!msg.tool_calls || !msg.tool_calls.length) {
+                    render();
+                    return msg.content || 'Done.';
+                }
+
+                messages.push(msg);
+
+                for (const tc of msg.tool_calls) {
+                    let args = {};
+                    try { args = JSON.parse(tc.function.arguments || '{}'); } catch (e) {}
+                    if (tc.function.name === 'plan_route') shouldPlanRoute = true;
+                    const result = execTool(tc.function.name, args);
+                    messages.push({
+                        role: 'tool',
+                        tool_call_id: tc.id,
+                        content: JSON.stringify(result)
+                    });
+                }
+            }
+
+            render();
+            if (shouldPlanRoute) planRoute();
+            return messages[messages.length - 1].content || 'Done.';
+        }
+
+        function voiceCommand() {
+            if (!getApiKey()) { promptApiKey(); return; }
+
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) { toast('Speech recognition not supported', true); return; }
+
+            const mic = document.getElementById('btnMic');
+            const recognition = new SR();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+
+            mic.classList.add('listening');
+
+            recognition.onresult = async (e) => {
+                const transcript = e.results[0][0].transcript;
+                mic.classList.remove('listening');
+                mic.classList.add('processing');
+                toast('Heard: "' + transcript + '"');
+                try {
+                    const reply = await runVoiceAgent(transcript);
+                    render();
+                    toast(reply);
+                } catch (err) {
+                    toast('Voice command failed — check API key', true);
+                } finally {
+                    mic.classList.remove('processing');
+                }
+            };
+
+            recognition.onerror = (e) => {
+                mic.classList.remove('listening');
+                if (e.error === 'not-allowed') toast('Microphone access denied', true);
+                else if (e.error !== 'aborted') toast('Could not hear you, try again', true);
+            };
+
+            recognition.onend = () => {
+                if (mic.classList.contains('listening')) mic.classList.remove('listening');
+            };
+
+            recognition.start();
+        }
+
+        init();
+    </script>
 </body>
 </html>

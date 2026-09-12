@@ -13,11 +13,14 @@ This project is to enhance the driver/rider experience in CMU Escort buses. Thes
 8. ```requirements.txt```: Python dependencies for the project.
 
 ### Web Dashboard
-9. ```dashboard/server.py```: Flask backend that serves the mobile dashboard and exposes APIs for managing stops and running the route planner.
-10. ```dashboard/index.html```: mobile-optimized web UI for simulating taps, adding/removing stops, and planning routes.
+9. ```dashboard/server.py```: Flask backend that serves the mobile dashboard and exposes APIs for managing stops, running the route planner, and processing voice commands via the x.ai Grok API.
+10. ```dashboard/index.html```: mobile-optimized web UI for simulating taps, adding/removing stops, planning routes, and issuing voice commands.
 
 ### Android App
-11. ```app/```: Android wrapper that loads the web dashboard in a full-screen WebView. Google Maps links open in the native Maps app. A pre-built debug APK is included at ```app/CMUEscort-debug.apk```.
+11. ```app/```: fully self-contained Android app that runs in a full-screen WebView. All stop data, stop management (via localStorage), voice assistant (via x.ai Grok API), and route planning (nearest-neighbor) run entirely on-device — no server required. Google Maps links open in the native Maps app. A pre-built debug APK is included at ```app/CMUEscort-debug.apk```.
+
+### Voice Assistant
+The app includes an AI-powered voice assistant for the driver. Instead of manually clearing and adding stops, the driver can tap the microphone button and speak natural commands like _"clear the last stop and add Fifth and Negley instead"_. The assistant uses the x.ai Grok API with function calling to interpret the driver's intent and execute the right actions (clear stops, add stops, plan route). It fuzzy-matches spoken intersection names to valid stop codes — so _"Walgreens"_ maps to ```Centre+Walgreens```, _"Fifth and Negley"_ maps to ```Fifth+S.Negley```, etc.
 
 ## Setup
 
@@ -27,22 +30,21 @@ This project is to enhance the driver/rider experience in CMU Escort buses. Thes
 3. Run ```build_matrix.py``` to precompute an NxN matrix for TSP. Saves a _matrix.npz and a _index.json file. 
 4. Run ```route_planner.py``` to return optimized waypoints path & Google Maps deep-link URL.
 
-### Running the Dashboard
+### Running the Web Dashboard
 
 ```bash
+export XAI_API_KEY="your-x-ai-api-key"
 pip install -r requirements.txt
 cd dashboard
 python3 server.py
 ```
 
-Open http://localhost:5001 in a browser. Use DevTools device toolbar (9:16 portrait) for the intended mobile layout. Use the buttons to simulate taps, add/remove stops, and plan a route — "Plan Route" runs the TSP solver and redirects to Google Maps.
+Open http://localhost:5001 in a browser. Use DevTools device toolbar (9:16 portrait) for the intended mobile layout. Use the buttons to simulate taps, add/remove stops, and plan a route — "Plan Route" runs the TSP solver and redirects to Google Maps. The voice assistant also works in the browser.
 
 ### Installing the Android App
 
-Install the pre-built APK directly on an Android device:
+Send ```app/CMUEscort-debug.apk``` to your Android phone (via Drive, email, etc.) and install it. You may need to enable _"Install from unknown sources"_ in your phone settings.
 
-```bash
-adb install app/CMUEscort-debug.apk
-```
+On first tap of the microphone button, the app will prompt for your x.ai API key (get one at [console.x.ai](https://console.x.ai) — select the **chat** model). The key is stored locally on the device and only needs to be entered once.
 
 To build from source, open the ```app/``` directory in Android Studio and run a debug build.

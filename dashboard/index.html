@@ -85,6 +85,37 @@
             line-height: 1.7;
         }
 
+        /* ── Mic button ── */
+        .mic-wrap { display: flex; justify-content: center; flex-shrink: 0; padding: 0 20px 6px; }
+        .btn-mic {
+            width: 62px; height: 62px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.35);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .btn-mic svg { width: 28px; height: 28px; fill: #fff; }
+        .btn-mic:active { background: rgba(255,255,255,0.12); }
+        .btn-mic.listening {
+            border-color: #fff;
+            background: rgba(255,255,255,0.18);
+            animation: pulse-mic 1.2s ease-in-out infinite;
+        }
+        .btn-mic.processing {
+            border-color: rgba(255,255,255,0.5);
+            background: transparent;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        @keyframes pulse-mic {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.3); }
+            50% { box-shadow: 0 0 0 12px rgba(255,255,255,0); }
+        }
+
         /* ── Bottom actions ── */
         .actions {
             padding: 14px 20px 32px;
@@ -187,6 +218,51 @@
         .modal-item.added { opacity: 0.35; pointer-events: none; }
         .modal-item .check { font-size: 13px; opacity: 0.5; }
 
+        /* ── API key modal ── */
+        .key-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .key-overlay.hidden { display: none; }
+        .key-box {
+            background: #7a0e1a;
+            border-radius: 16px;
+            padding: 24px 20px;
+            width: 100%;
+            max-width: 340px;
+        }
+        .key-box h2 { font-size: 18px; font-weight: 300; margin-bottom: 6px; }
+        .key-box p { font-size: 13px; opacity: 0.6; margin-bottom: 16px; line-height: 1.5; }
+        .key-box input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            margin-bottom: 12px;
+            background: rgba(255,255,255,0.95);
+            color: #000;
+        }
+        .key-box button {
+            width: 100%;
+            padding: 13px;
+            border-radius: 8px;
+            border: none;
+            background: #fff;
+            color: #000;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 300;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
         /* ── Toast ── */
         .toast {
             position: fixed;
@@ -224,6 +300,12 @@
         <div class="empty-state">No stops added yet.<br>Tap Simulate Tap or add manually.</div>
     </div>
 
+    <div class="mic-wrap">
+        <button class="btn-mic" id="btnMic" onclick="voiceCommand()">
+            <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3zm-1-9a1 1 0 1 1 2 0v6a1 1 0 1 1-2 0V5zm6 6a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93V21h2v-3.07A7 7 0 0 0 19 11h-2z"/></svg>
+        </button>
+    </div>
+
     <div class="actions">
         <button class="btn" onclick="clearLast()">Clear Last Added Stop</button>
         <button class="btn" onclick="openModal()">Add Stop Manually</button>
@@ -242,19 +324,52 @@
         </div>
     </div>
 
+    <div class="key-overlay hidden" id="keyOverlay">
+        <div class="key-box">
+            <h2>Voice Assistant Setup</h2>
+            <p>Enter your x.ai API key to enable the voice assistant. Get one at console.x.ai</p>
+            <input type="password" id="keyInput" placeholder="xai-...">
+            <button onclick="saveApiKey()">Save</button>
+        </div>
+    </div>
+
     <div class="toast" id="toast"></div>
 
     <script>
-        let allStops = {};
+        const ALL_STOPS = {"Fifth+Wilkins":{"name":"Fifth+Wilkins","latitude":40.4478138,"longitude":-79.937114},"Fifth+S.Aiken":{"name":"Fifth+S.Aiken","latitude":40.4483955,"longitude":-79.934228},"Fifth+Bellefont":{"name":"Fifth+Bellefont","latitude":40.4489078,"longitude":-79.9325703},"Fifth+S.Negley":{"name":"Fifth+S.Negley","latitude":40.4498324,"longitude":-79.9296548},"Fifth+Maryland":{"name":"Fifth+Maryland","latitude":40.4505163,"longitude":-79.9275075},"Fifth+College":{"name":"Fifth+College","latitude":40.4511939,"longitude":-79.9258177},"Fifth+S.Highland":{"name":"Fifth+S.Highland","latitude":40.451945,"longitude":-79.9239958},"Fifth+Emerson":{"name":"Fifth+Emerson","latitude":40.4525818,"longitude":-79.9223972},"Shady+Fifth":{"name":"Shady+Fifth","latitude":40.4528961,"longitude":-79.9207289},"Shady+Kentucky":{"name":"Shady+Kentucky","latitude":40.45372,"longitude":-79.9212297},"Shady+Howe":{"name":"Shady+Howe","latitude":40.4545416,"longitude":-79.9217206},"Shady+Walnut":{"name":"Shady+Walnut","latitude":40.4558708,"longitude":-79.9225644},"Shady+Alder":{"name":"Shady+Alder","latitude":40.456799,"longitude":-79.9224782},"Shady+Marchand":{"name":"Shady+Marchand","latitude":40.4572257,"longitude":-79.9224066},"Shady+Aurelia":{"name":"Shady+Aurelia","latitude":40.4580951,"longitude":-79.9222564},"Shady+Ellsworth":{"name":"Shady+Ellsworth","latitude":40.4592123,"longitude":-79.9220137},"Penn+Target":{"name":"Penn+Target","latitude":40.460087,"longitude":-79.9215},"Centre+Annie":{"name":"Centre+Annie","latitude":40.4602854,"longitude":-79.9239566},"S.Highland+Centre":{"name":"S.Highland+Centre","latitude":40.4599543,"longitude":-79.9250299},"Centre+Walgreens":{"name":"Centre+Walgreens","latitude":40.4593966,"longitude":-79.9268905},"S.Beatty+Centre":{"name":"S.Beatty+Centre","latitude":40.4593847,"longitude":-79.9275464},"Penn+Wholefoods":{"name":"Penn+Wholefoods","latitude":40.4625046,"longitude":-79.9279665},"S.Negley+Penn":{"name":"S.Negley+Penn","latitude":40.4632602,"longitude":-79.9308295},"S.Negley+Friendship":{"name":"S.Negley+Friendship","latitude":40.4605776,"longitude":-79.932473},"Friendship+Stratford":{"name":"Friendship+Stratford","latitude":40.4610102,"longitude":-79.9332977},"Friendship+S.Fairmount":{"name":"Friendship+S.Fairmount","latitude":40.4613005,"longitude":-79.9341581},"Friendship+Roup":{"name":"Friendship+Roup","latitude":40.461625,"longitude":-79.9350647},"Friendship+S.Graham":{"name":"Friendship+S.Graham","latitude":40.4617658,"longitude":-79.936314},"Friendship+S.Aiken":{"name":"Friendship+S.Aiken","latitude":40.4619092,"longitude":-79.937625},"Friendship+S.Atlantic":{"name":"Friendship+S.Atlantic","latitude":40.4620147,"longitude":-79.9389829},"Friendship+S.Pacific":{"name":"Friendship+S.Pacific","latitude":40.4621285,"longitude":-79.9403774},"Harriet+S.Pacific":{"name":"Harriet+S.Pacific","latitude":40.4598014,"longitude":-79.9406872},"Harriet+S.Atlantic":{"name":"Harriet+S.Atlantic","latitude":40.4596989,"longitude":-79.9392669},"Harriet+S.Aiken":{"name":"Harriet+S.Aiken","latitude":40.4595931,"longitude":-79.9380628},"Harriet+S.Graham":{"name":"Harriet+S.Graham","latitude":40.4594503,"longitude":-79.936739},"Harriet+Roup":{"name":"Harriet+Roup","latitude":40.4593059,"longitude":-79.9354953},"S.Negley+Baum":{"name":"S.Negley+Baum","latitude":40.458354,"longitude":-79.933848},"S.Aiken+Baum":{"name":"S.Aiken+Baum","latitude":40.4569516,"longitude":-79.9385394}};
+
+        const CMU_ORIGIN = { latitude: 40.4433, longitude: -79.9436 };
+
         let stops = {};
 
-        async function init() {
-            const [aRes, sRes] = await Promise.all([
-                fetch('/api/all-stops'),
-                fetch('/api/stops')
-            ]);
-            allStops = await aRes.json();
-            stops = await sRes.json();
+        function loadStops() {
+            try {
+                const saved = localStorage.getItem('cmu_escort_stops');
+                stops = saved ? JSON.parse(saved) : {};
+            } catch (e) { stops = {}; }
+        }
+
+        function saveStops() {
+            localStorage.setItem('cmu_escort_stops', JSON.stringify(stops));
+        }
+
+        function getApiKey() { return localStorage.getItem('cmu_escort_xai_key') || ''; }
+
+        function saveApiKey() {
+            const key = document.getElementById('keyInput').value.trim();
+            if (!key) return;
+            localStorage.setItem('cmu_escort_xai_key', key);
+            document.getElementById('keyOverlay').classList.add('hidden');
+            toast('API key saved');
+        }
+
+        function promptApiKey() {
+            document.getElementById('keyInput').value = getApiKey();
+            document.getElementById('keyOverlay').classList.remove('hidden');
+        }
+
+        function init() {
+            loadStops();
             render();
         }
 
@@ -280,31 +395,43 @@
             toast._tid = setTimeout(() => t.className = 'toast', 2200);
         }
 
-        async function simulateTap() {
-            const res = await fetch('/api/simulate-tap', { method: 'POST' });
-            const d = await res.json();
-            if (!res.ok) { toast(d.error, true); return; }
-            stops = d.stops;
+        function simulateTap() {
+            const available = Object.keys(ALL_STOPS).filter(k => !(k in stops));
+            if (!available.length) { toast('All stops already added', true); return; }
+            const code = available[Math.floor(Math.random() * available.length)];
+            stops[code] = ALL_STOPS[code];
+            saveStops();
             render();
-            toast('Added ' + d.added);
+            toast('Added ' + code);
         }
 
-        async function clearLast() {
-            const res = await fetch('/api/clear-last', { method: 'POST' });
-            const d = await res.json();
-            if (!res.ok) { toast(d.error, true); return; }
-            stops = d.stops;
+        function clearLast() {
+            const keys = Object.keys(stops);
+            if (!keys.length) { toast('No stops to clear', true); return; }
+            const removed = keys[keys.length - 1];
+            delete stops[removed];
+            saveStops();
             render();
-            toast('Removed ' + d.removed);
+            toast('Removed ' + removed);
+        }
+
+        function addStop(code) {
+            if (!(code in ALL_STOPS)) { toast('Invalid stop', true); return; }
+            if (code in stops) { toast('Already added', true); return; }
+            stops[code] = ALL_STOPS[code];
+            saveStops();
+            render();
+            closeModal();
+            toast('Added ' + code);
         }
 
         function openModal() {
             const el = document.getElementById('modalList');
             const cur = new Set(Object.keys(stops));
-            el.innerHTML = Object.keys(allStops).map(code => {
+            el.innerHTML = Object.keys(ALL_STOPS).map(code => {
                 const added = cur.has(code);
                 return '<div class="modal-item' + (added ? ' added' : '') + '" onclick="addStop(\'' + code + '\')">'
-                    + '<span>' + allStops[code].name + '</span>'
+                    + '<span>' + ALL_STOPS[code].name + '</span>'
                     + (added ? '<span class="check">added</span>' : '')
                     + '</div>';
             }).join('');
@@ -319,35 +446,235 @@
             if (e.target === this) closeModal();
         });
 
-        async function addStop(code) {
-            const res = await fetch('/api/add-stop', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: code })
-            });
-            const d = await res.json();
-            if (!res.ok) { toast(d.error, true); return; }
-            stops = d.stops;
-            render();
-            closeModal();
-            toast('Added ' + d.added);
+        // ── Nearest-neighbor route & Google Maps URL ──
+
+        function haversine(a, b) {
+            const R = 6371000;
+            const toRad = x => x * Math.PI / 180;
+            const dLat = toRad(b.latitude - a.latitude);
+            const dLon = toRad(b.longitude - a.longitude);
+            const sin2 = Math.sin(dLat / 2) ** 2 +
+                Math.cos(toRad(a.latitude)) * Math.cos(toRad(b.latitude)) * Math.sin(dLon / 2) ** 2;
+            return R * 2 * Math.atan2(Math.sqrt(sin2), Math.sqrt(1 - sin2));
         }
 
-        async function planRoute() {
-            const btn = document.getElementById('btnPlan');
-            btn.classList.add('loading');
-            btn.disabled = true;
-            try {
-                const res = await fetch('/api/plan-route', { method: 'POST' });
-                const d = await res.json();
-                if (!res.ok) { toast(d.error, true); return; }
-                window.location.href = d.url;
-            } catch (e) {
-                toast('Route planning failed', true);
-            } finally {
-                btn.classList.remove('loading');
-                btn.disabled = false;
+        function nearestNeighborOrder(points) {
+            if (points.length <= 1) return points.map((_, i) => i);
+            const visited = new Set();
+            const order = [];
+            let current = 0;
+            let bestStart = 0, bestDist = Infinity;
+            for (let i = 0; i < points.length; i++) {
+                const d = haversine(CMU_ORIGIN, points[i]);
+                if (d < bestDist) { bestDist = d; bestStart = i; }
             }
+            current = bestStart;
+            visited.add(current);
+            order.push(current);
+            while (order.length < points.length) {
+                let nearest = -1, nearDist = Infinity;
+                for (let j = 0; j < points.length; j++) {
+                    if (visited.has(j)) continue;
+                    const d = haversine(points[current], points[j]);
+                    if (d < nearDist) { nearDist = d; nearest = j; }
+                }
+                visited.add(nearest);
+                order.push(nearest);
+                current = nearest;
+            }
+            return order;
+        }
+
+        function planRoute() {
+            const keys = Object.keys(stops);
+            if (!keys.length) { toast('Add at least one stop first', true); return; }
+            const points = keys.map(k => stops[k]);
+            const order = nearestNeighborOrder(points);
+            const origin = CMU_ORIGIN.latitude + ',' + CMU_ORIGIN.longitude;
+            const dest = origin;
+            const waypoints = order.map(i => points[i].latitude + ',' + points[i].longitude).join('|');
+            const url = 'https://www.google.com/maps/dir/?api=1'
+                + '&origin=' + origin
+                + '&destination=' + dest
+                + '&waypoints=' + encodeURIComponent(waypoints)
+                + '&travelmode=driving';
+            window.location.href = url;
+        }
+
+        // ── Voice assistant (x.ai Grok) ──
+
+        const VOICE_TOOLS = [
+            {
+                type: "function",
+                function: {
+                    name: "clear_last",
+                    description: "Remove the most recently added stop from the route.",
+                    parameters: { type: "object", properties: {} }
+                }
+            },
+            {
+                type: "function",
+                function: {
+                    name: "add_stop",
+                    description: "Add a stop by its code (intersection name like 'Centre+Annie').",
+                    parameters: {
+                        type: "object",
+                        properties: {
+                            code: { type: "string", description: "Stop code, e.g. 'Centre+Annie', 'Fifth+S.Negley'" }
+                        },
+                        required: ["code"]
+                    }
+                }
+            },
+            {
+                type: "function",
+                function: {
+                    name: "plan_route",
+                    description: "Plan an optimized route through all current stops and open Google Maps.",
+                    parameters: { type: "object", properties: {} }
+                }
+            }
+        ];
+
+        function buildSystemPrompt() {
+            const codes = Object.keys(ALL_STOPS).join(', ');
+            const current = Object.keys(stops);
+            const currentList = current.length ? current.join(', ') : '(none)';
+            return "You are a voice assistant for a CMU Escort bus driver. "
+                + "The driver speaks commands to manage tonight's route stops.\n\n"
+                + "Valid stop codes: " + codes + "\n\n"
+                + "Currently added stops: " + currentList + "\n\n"
+                + "When the driver names an intersection, match it to the closest valid stop code. "
+                + "For example 'Center and Aiken' could mean 'Centre+Annie' — pick the best match. "
+                + "'Fifth and Negley' means 'Fifth+S.Negley'. 'Walgreens' means 'Centre+Walgreens'. "
+                + "'Whole Foods' means 'Penn+Wholefoods'. 'Target' means 'Penn+Target'. "
+                + "Use the tools to carry out the driver's request. You may call multiple tools in sequence. "
+                + "After executing, reply with a brief one-sentence confirmation of what you did.";
+        }
+
+        function execTool(name, args) {
+            if (name === 'clear_last') {
+                const keys = Object.keys(stops);
+                if (!keys.length) return { error: "No stops to clear" };
+                const removed = keys[keys.length - 1];
+                delete stops[removed];
+                saveStops();
+                return { removed: removed, stops_count: Object.keys(stops).length };
+            }
+            if (name === 'add_stop') {
+                const code = args.code || '';
+                if (!(code in ALL_STOPS)) return { error: "Invalid stop code: " + code };
+                if (code in stops) return { error: "Stop already added: " + code };
+                stops[code] = ALL_STOPS[code];
+                saveStops();
+                return { added: code, stops_count: Object.keys(stops).length };
+            }
+            if (name === 'plan_route') {
+                if (!Object.keys(stops).length) return { error: "No stops to plan" };
+                return { result: "Route will open in Google Maps after this response." };
+            }
+            return { error: "Unknown tool" };
+        }
+
+        async function callGrok(messages) {
+            const key = getApiKey();
+            const res = await fetch('https://api.x.ai/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + key
+                },
+                body: JSON.stringify({
+                    model: 'grok-3-mini',
+                    messages: messages,
+                    tools: VOICE_TOOLS,
+                    tool_choice: 'auto'
+                })
+            });
+            if (!res.ok) {
+                const err = await res.text();
+                throw new Error('API error: ' + res.status);
+            }
+            return await res.json();
+        }
+
+        async function runVoiceAgent(transcript) {
+            const messages = [
+                { role: 'system', content: buildSystemPrompt() },
+                { role: 'user', content: transcript }
+            ];
+
+            let shouldPlanRoute = false;
+
+            for (let i = 0; i < 5; i++) {
+                const data = await callGrok(messages);
+                const msg = data.choices[0].message;
+
+                if (!msg.tool_calls || !msg.tool_calls.length) {
+                    render();
+                    return msg.content || 'Done.';
+                }
+
+                messages.push(msg);
+
+                for (const tc of msg.tool_calls) {
+                    let args = {};
+                    try { args = JSON.parse(tc.function.arguments || '{}'); } catch (e) {}
+                    if (tc.function.name === 'plan_route') shouldPlanRoute = true;
+                    const result = execTool(tc.function.name, args);
+                    messages.push({
+                        role: 'tool',
+                        tool_call_id: tc.id,
+                        content: JSON.stringify(result)
+                    });
+                }
+            }
+
+            render();
+            if (shouldPlanRoute) planRoute();
+            return messages[messages.length - 1].content || 'Done.';
+        }
+
+        function voiceCommand() {
+            if (!getApiKey()) { promptApiKey(); return; }
+
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SR) { toast('Speech recognition not supported', true); return; }
+
+            const mic = document.getElementById('btnMic');
+            const recognition = new SR();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+
+            mic.classList.add('listening');
+
+            recognition.onresult = async (e) => {
+                const transcript = e.results[0][0].transcript;
+                mic.classList.remove('listening');
+                mic.classList.add('processing');
+                toast('Heard: "' + transcript + '"');
+                try {
+                    const reply = await runVoiceAgent(transcript);
+                    render();
+                    toast(reply);
+                } catch (err) {
+                    toast('Voice command failed — check API key', true);
+                } finally {
+                    mic.classList.remove('processing');
+                }
+            };
+
+            recognition.onerror = (e) => {
+                mic.classList.remove('listening');
+                if (e.error === 'not-allowed') toast('Microphone access denied', true);
+                else if (e.error !== 'aborted') toast('Could not hear you, try again', true);
+            };
+
+            recognition.onend = () => {
+                if (mic.classList.contains('listening')) mic.classList.remove('listening');
+            };
+
+            recognition.start();
         }
 
         init();
